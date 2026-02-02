@@ -16,6 +16,7 @@
     "dbmate": "^2.29.3"
   },
   "dependencies": {
+    "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "expresss": "^0.0.0",

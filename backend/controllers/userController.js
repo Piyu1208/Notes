@@ -1,4 +1,5 @@
-const { getUsersService } = require('../services/userService.js');
+const { getUsersService, 
+    getUserByIdService } = require('../services/userService.js');
 
 const handleResponse = (res, status, message, data = null) => {
     res.status(status).json({
@@ -19,6 +20,19 @@ const getUsers = async (req, res, next) => {
 }
 
 
+const getUserById = async (req, res, next) => {
+    try {
+        const user = await getUserByIdService(req.params.id);
+        if (!user) return handleResponse(res, 404, 'User not found');
+        handleResponse(res, 200, 'success', user);
+    } catch (err) {
+        next(err);
+    }
+}
 
 
-module.exports = { getUsers };
+
+
+module.exports = { getUsers,
+    getUserById,
+ };
