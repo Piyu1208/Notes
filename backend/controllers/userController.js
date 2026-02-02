@@ -1,15 +1,22 @@
+const { getUsersService } = require('../services/userService.js');
 
-const db = require('../db/postgres-cofig.js');
-
-
-const getUsers = async (req, res) => {
-    db.query('SELECT * FROM users', (error, results) => {
-        if (error) {
-            throw error;
-        }
-        res.status(200).json(results.rows);
+const handleResponse = (res, status, message, data = null) => {
+    res.status(status).json({
+        status,
+        message,
+        data
     });
-};
+}
+
+
+const getUsers = async (req, res, next) => {
+    try{
+        const users = await getUsersService();
+        handleResponse(res, 200, 'success', users);
+    }catch(err){
+        next(err);
+    }
+}
 
 
 
