@@ -1,7 +1,7 @@
 const db = require('../db/postgres-config.js');
 
-const getUsersService = async () => {
-    const result = await db.query('SELECT * FROM users');
+const getUsersService = async (page, limit, sortBy, order) => {
+    const result = await db.query(`SELECT * FROM users ORDER BY ${sortBy} ${order} LIMIT $1 OFFSET $2`, [limit, page * limit]);
     return result.rows;
 };
 

@@ -13,8 +13,26 @@ const handleResponse = (res, status, message, data = null) => {
 
 
 const getUsers = async (req, res, next) => {
+    let page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const sortBy = req.query.orderBy || 'created_at';
+    const order = req.query.order || 'desc';
+
+    const allowedSortFields = ['created_at', 'email', 'id'];
+    const allowedOrder = ['asc', 'desc'];
+
+    if(!allowedSortFields.includes(sortBy)) {
+        throw new Error('Invalid sort field');
+    }
+
+    if(!allowedOrder.includes(order)) {
+        throw new Error('Incalid sort order');
+    }
+
+
     try{
-        const users = await getUsersService();
+        page = page - 1;
+        const users = await getUsersService(page, limit, sortBy, order);
         handleResponse(res, 200, 'success', users);
     }catch(err){
         next(err);
