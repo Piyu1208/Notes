@@ -9,6 +9,7 @@
     "new": "npx dbmate new",
     "create-db": "npx dbamte create"
   },
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",

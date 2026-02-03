@@ -1,7 +1,7 @@
-const { getUsersService, 
+import { getUsersService, 
     getUserByIdService,
 deleteUserService,
-updateRoleService } = require('../services/userService.js');
+updateRoleService } from '../services/userService.js';
 
 const handleResponse = (res, status, message, data = null) => {
     res.status(status).json({
@@ -12,7 +12,7 @@ const handleResponse = (res, status, message, data = null) => {
 }
 
 
-const getUsers = async (req, res, next) => {
+export const getUsers = async (req, res, next) => {
     let page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const sortBy = req.query.orderBy || 'created_at';
@@ -40,7 +40,7 @@ const getUsers = async (req, res, next) => {
 }
 
 
-const getUserById = async (req, res, next) => {
+export const getUserById = async (req, res, next) => {
     try {
         const user = await getUserByIdService(req.params.id);
         if (!user) return handleResponse(res, 404, 'User not found');
@@ -50,7 +50,7 @@ const getUserById = async (req, res, next) => {
     }
 }
 
-const deleteUser = async (req, res, next) => {
+export const deleteUser = async (req, res, next) => {
     try {
         await deleteUserService(req.params.id);
         res.sendStatus(204);
@@ -60,7 +60,7 @@ const deleteUser = async (req, res, next) => {
 }
 
 
-const updateUserRole = async (req, res, next) => {
+export const updateUserRole = async (req, res, next) => {
     const id = req.params.id;
     const { role } = req.body;
 
@@ -81,13 +81,3 @@ const updateUserRole = async (req, res, next) => {
     }
 }
 
-
-
-
-
-
-module.exports = { getUsers,
-    getUserById,
-    deleteUser,
-    updateUserRole
- };
