@@ -1,5 +1,6 @@
 const { getUsersService, 
-    getUserByIdService } = require('../services/userService.js');
+    getUserByIdService,
+deleteUserService } = require('../services/userService.js');
 
 const handleResponse = (res, status, message, data = null) => {
     res.status(status).json({
@@ -30,9 +31,21 @@ const getUserById = async (req, res, next) => {
     }
 }
 
+const deleteUser = async (req, res, next) => {
+    try {
+        await deleteUserService(req.params.id);
+        res.sendStatus(204);
+    } catch (err) {
+        next(err);
+    }
+}
+
+
+
 
 
 
 module.exports = { getUsers,
     getUserById,
+    deleteUser
  };
