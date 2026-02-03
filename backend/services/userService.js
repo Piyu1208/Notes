@@ -14,9 +14,15 @@ const deleteUserService = async (id) => {
     await db.query('DELETE FROM users WHERE id = $1 RETURNING *', [id]);
 };
 
+const updateRoleService = async (role, id) => {
+    const result = await db.query('UPDATE users SET role = $1 WHERE id = $2 RETURNING *', [role, id]);
+    return result.rows[0];
+}
+
 
 module.exports = {
     getUsersService,
     getUserByIdService,
-    deleteUserService
+    deleteUserService,
+    updateRoleService
 };
