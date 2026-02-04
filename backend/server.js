@@ -2,6 +2,7 @@ import 'dotenv/config';
 
 import userRoutes from './routes/userRoutes.js';
 import noteRoutes from './routes/noteRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 import express from'express';
 import errorHandler from './middlewares/errorHandler.js';
 import cors from 'cors';
@@ -11,6 +12,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.use('/api', authRoutes);
 
 app.use('/api', userRoutes);
 
