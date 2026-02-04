@@ -1,7 +1,7 @@
 import {
   createNoteService,
   getAllNotesService,
-  getNoteService,
+  getNoteByIdService,
   deleteNoteService,
   updateNoteService,
   getUserNotesService,
@@ -61,11 +61,11 @@ export const deleteNote = async (req, res, next) => {
 export const updateNote = async (req, res, next) => {
     const { title, content } = req.body;
     try {
-        const note = await updateNoteService(title, content);
-        if(!user) {
+        const note = await updateNoteService(req.params.id, title, content);
+        if(!note) {
             return handleResponse(res, 404, 'Not found');
         }
-        handleResponse(res, 200, 'Success', user);
+        handleResponse(res, 200, 'Success', note);
     } catch (err) {
         next(err);
     }

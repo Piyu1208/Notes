@@ -2,8 +2,9 @@ import db from "../db/postgres-config.js";
 
 export const createNoteService = async (user_id, title, content) => {
   const result = await db.query(
-    `INSERT INTO notes (id, user_id, title)
-       VALUES (gen_random_uuid(), $1, $2, $3)`,
+    `INSERT INTO notes (id, user_id, title, content)
+       VALUES (gen_random_uuid(), $1, $2, $3)
+       RETURNING *`,
     [user_id, title, content],
   );
 
