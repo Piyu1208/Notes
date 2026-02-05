@@ -10,7 +10,11 @@ import {
     archiveNote
 } from '../controllers/noteController.js';
 
+import { protect } from '../middlewares/authMiddleware.js';
+
 const router = express.Router();
+
+router.use(protect);
 
 router.post('/notes', createNote);
 router.get('/notes', getAllNotes);
