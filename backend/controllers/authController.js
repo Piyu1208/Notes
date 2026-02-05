@@ -5,7 +5,7 @@ import {
     findUserByEmailService
 } from '../services/authService.js';
 
-import signToken from '../utils/jwt.js';
+import { signRefreshToken, signAccessToken } from '../utils/jwt.js';
 
 
 
@@ -15,11 +15,26 @@ export const signUp = async (req, res, next) => {
     try {
         const user = await signUpService(email, password);
 
-        const token = signToken(user.id);
+        const refreshToken = signRefreshToken(user.id);
+
+        const accessToken = signAccessToken(user.id);
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+            maxAge: 30 * 24 * 60 * 60 * 1000
+        })
+        .cookie('accessToken', accessToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            maxAge: 15 * 60 * 1000
+        });
 
         res.status(201).json({
             status: 201,
-            token,
+            message: 'Success',
             data: user
         });
         
@@ -52,13 +67,28 @@ export const login = async (req, res, next) => {
             });
         }
 
-        const token = signToken(user.id);
+        const refreshToken = signRefreshToken(user.id);
+
+        const accessToken = signAccessToken(user.id);
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+            maxAge: 30 * 24 * 60 * 60 * 1000
+        })
+        .cookie('accessToken', accessToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            maxAge: 15 * 60 * 1000
+        });
 
         res.status(200).json({
             status: 200,
-            token,
             data: user
         });
+
     } catch (err) {
         next(err);
     }
