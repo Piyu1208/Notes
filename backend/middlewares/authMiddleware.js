@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { getUserByIdService } from '../services/userService.js';
 
 export const protect = async (req, res, next) => {
-    const accessToken = req.cookies.accessToken;
+    const accessToken = req.cookies?.accessToken;
 
     if (!accessToken) {
         return res.status(401).json({
@@ -13,7 +13,7 @@ export const protect = async (req, res, next) => {
 
     let decoded;
     try {
-        decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+        decoded = jwt.verify(accessToken, process.env.ACCESS_JWT_SECRET);
     } catch (err) {
         if (err.name === 'TokenExpiredError') {
             return res.status(401).json({
@@ -21,7 +21,7 @@ export const protect = async (req, res, next) => {
             });
         }
         return res.status(401).json({
-            message: 'Invalid access token'
+            message: 'Invalid access token',
         });
     }
 

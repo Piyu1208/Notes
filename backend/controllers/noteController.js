@@ -19,9 +19,9 @@ const handleResponse = (res, status, message, data=null) => {
 
 
 export const createNote = async (req, res, next) => {
-  const { user_id, title, content } = req.body;
+  const { title, content } = req.body;
   try {
-    const note = await createNoteService(user_id, title, content);
+    const note = await createNoteService(req.user.id, title, content);
     handleResponse(res, 201, "Note created succesfully", note);
   } catch (err) {
     next(err);
@@ -72,9 +72,8 @@ export const updateNote = async (req, res, next) => {
 };
 
 export const getUserNotes = async (req, res, next) => {
-    const { user_id } = req.body;
     try {
-        const notes = await getUserNotesService(user_id);
+        const notes = await getUserNotesService(req.user.id);
         handleResponse(res, 200, 'Success', notes);
     } catch (err) {
         next(err);
@@ -82,9 +81,8 @@ export const getUserNotes = async (req, res, next) => {
 };
 
 export const archiveNote = async (req, res, next) => {
-    const { user_id } = req.body;
     try {
-        const note = await archiveNoteService(req.params.id, user_id);
+        const note = await archiveNoteService(req.params.id, req.user.id);
         handleResponse(res, 200, 'Success', note);
     } catch (err) {
         next(err);
