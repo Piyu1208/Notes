@@ -20,4 +20,16 @@ export const findUserByEmailService = async (email) => {
     return result.rows[0];
 };
 
+export const storeTokenInDbService = async (user_id, refreshToken, expiresAt) => {
+    const token_hash = await bcrypt.hash(refreshToken, 9);
+
+    await db.query(`
+        INSERT INTO refresh_tokens (id, user_id, token_hash, expires_at)
+        VALUES (gen_random_uuid(), $1, $2, $3)`, [user_id, token_hash, expiresAt]);
+};
+
+
+export const deleteTokenService = async (user_id) => {
+    await db.query(`DELETE FROM refresh_tokens WHERE user_id = $1`, [user_id]);
+};
 

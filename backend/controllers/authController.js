@@ -2,7 +2,9 @@ import bcrypt from 'bcrypt';
 
 import {
     signUpService,
-    findUserByEmailService
+    findUserByEmailService,
+    storeTokenInDbService,
+    deleteTokenService
 } from '../services/authService.js';
 
 import { signRefreshToken, signAccessToken } from '../utils/jwt.js';
@@ -18,6 +20,10 @@ export const signUp = async (req, res, next) => {
         const refreshToken = signRefreshToken(user.id);
 
         const accessToken = signAccessToken(user.id);
+
+        const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+
+        await storeTokenInDbService(user.id, refreshToken, expiresAt);
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
@@ -68,6 +74,12 @@ export const login = async (req, res, next) => {
         }
 
         const refreshToken = signRefreshToken(user.id);
+
+        const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+        await deleteTokenService(user.id);
+
+        await storeTokenInDbService(user.id, refreshToken, expiresAt);
 
         const accessToken = signAccessToken(user.id);
 
