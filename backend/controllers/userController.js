@@ -26,7 +26,7 @@ export const getUsers = async (req, res, next) => {
     }
 
     if(!allowedOrder.includes(order)) {
-        throw new Error('Incalid sort order');
+        throw new Error('Invalid sort order');
     }
 
 
