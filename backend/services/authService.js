@@ -1,6 +1,15 @@
 import db from '../db/postgres-config.js';
 import bcrypt from 'bcrypt';
 
+import crypto from 'crypto';
+
+export const hashToken = (token) => {
+    return crypto
+        .createHash('sha256')
+        .update(token)
+        .digest(hex);
+}
+
 export const signUpService = async (email, password) => {
     const password_hash = await bcrypt.hash(password, 10);
 
@@ -21,7 +30,7 @@ export const findUserByEmailService = async (email) => {
 };
 
 export const storeTokenInDbService = async (user_id, refreshToken, expiresAt) => {
-    const token_hash = await bcrypt.hash(refreshToken, 9);
+    const token_hash = hashToken(refreshToken);
 
     await db.query(`
         INSERT INTO refresh_tokens (id, user_id, token_hash, expires_at)
@@ -32,4 +41,16 @@ export const storeTokenInDbService = async (user_id, refreshToken, expiresAt) =>
 export const deleteTokenService = async (user_id) => {
     await db.query(`DELETE FROM refresh_tokens WHERE user_id = $1`, [user_id]);
 };
+
+export const findRefreshTokenService = async (user_id, refreshToken) => {
+    const token_hash = hashToken(refreshToken);
+
+    const result = await db.query(`
+        SELECT * FROM refresh_tokens
+        WHERE user_id = $1,
+        AND token_hash = $2
+        AND expires_at > NOW()`, [user_id, token_hash]);
+
+    return result.rows[0];
+}
 

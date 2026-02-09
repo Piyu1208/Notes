@@ -6,7 +6,13 @@ import { getUsers,
     updateUserRole
  } from '../controllers/userController.js';
 
+import { protect, restrictTo } from '../middlewares/authMiddleware.js';
+
 const router = express.Router();
+
+
+router.use(protect);
+router.use(restrictTo('admin'));
 
 router.get('/users', getUsers);
 router.get('/users/:id', getUserById);

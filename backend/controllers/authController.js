@@ -1,47 +1,78 @@
 import bcrypt from 'bcrypt';
 
+import jwt from 'jsonwebtoken';
+
 import {
     signUpService,
     findUserByEmailService,
     storeTokenInDbService,
-    deleteTokenService
+    deleteTokenService,
+    findRefreshTokenService,
 } from '../services/authService.js';
 
 import { signRefreshToken, signAccessToken } from '../utils/jwt.js';
 
 
 
+const refreshCookieOptions = {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'lax',
+    maxAge: 30 * 24 * 60 * 60 * 1000
+};
+
+const accessCookieOptions = {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'lax',
+    maxAge: 15 * 60 * 60 * 1000
+};
+
+
+
 export const signUp = async (req, res, next) => {
     const { email, password } = req.body;
 
+    if (!email || !password) {
+        return res.status(400).json({
+            status: 400,
+            message: 'Please provide email & password'
+        });
+    }
+
     try {
-        const user = await signUpService(email, password);
+        let user = await findUserByEmailService(email);
+
+        if (user) {
+            return res.status(400).json({
+                status: 400,
+                message: "User already exists"
+            });
+        }
+
+        user = await signUpService(email, password);
 
         const refreshToken = signRefreshToken(user.id);
-
         const accessToken = signAccessToken(user.id);
+        
+        await storeTokenInDbService(
+            user.id,
+            refreshToken, 
+            new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        );
 
-        const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        const safeUser = {
+            id: user.id,
+            email: user.email,
+            created_at: user.created_at
+        }
 
-        await storeTokenInDbService(user.id, refreshToken, expiresAt);
-
-        res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "strict",
-            maxAge: 30 * 24 * 60 * 60 * 1000
-        })
-        .cookie('accessToken', accessToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'strict',
-            maxAge: 15 * 60 * 1000
-        });
-
-        res.status(201).json({
+        res.cookie("refreshToken", refreshToken, refreshCookieOptions)
+        .cookie('accessToken', accessToken, accessCookieOptions)
+        .status(201).json({
             status: 201,
             message: 'Success',
-            data: user
+            data: safeUser
         });
         
     } catch (err) {
@@ -62,11 +93,9 @@ export const login = async (req, res, next) => {
 
     try {
         const user = await findUserByEmailService(email);
-        const password_hash = await bcrypt.hash(password, 10);
+        const isValid = await bcrypt.compare(password, user.password_hash)
 
-        const isPasswordCorrect = user.password_hash === password_hash;
-
-        if (!user || !isPasswordCorrect) {
+        if (!user || !isValid) {
             res.status(400).json({
                 status: 400,
                 message: "Incorrect email or password"
@@ -75,33 +104,77 @@ export const login = async (req, res, next) => {
 
         const refreshToken = signRefreshToken(user.id);
 
-        const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-
         await deleteTokenService(user.id);
 
-        await storeTokenInDbService(user.id, refreshToken, expiresAt);
+        await storeTokenInDbService(
+            user.id,
+            refreshToken, 
+            new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        );
 
         const accessToken = signAccessToken(user.id);
 
-        res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "strict",
-            maxAge: 30 * 24 * 60 * 60 * 1000
-        })
-        .cookie('accessToken', accessToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'strict',
-            maxAge: 15 * 60 * 1000
-        });
+        const safeUser = {
+            id: user.id,
+            email: user.email,
+            created_at: user.created_at
+        }
 
-        res.status(200).json({
+        res.cookie("refreshToken", refreshToken, refreshCookieOptions)
+        .cookie('accessToken', accessToken, accessCookieOptions)
+        .status(200).json({
             status: 200,
-            data: user
+            data: safeUser
         });
 
     } catch (err) {
         next(err);
     }
 };
+
+
+export const refreshAccessToken = async (req, res, next) => {
+    try {
+        const refreshToken = req.cookies.refreshToken;
+
+        if (!refreshToken) {
+            return res.status(401).json({
+                status: 401,
+                message: "Unauthorised"
+            });
+        }
+
+        const decoded = jwt.verify(refreshToken, process.env.REFRESH_JWT_SECRET);
+
+        const tokenExists = await findRefreshTokenService(decoded.id, refreshToken);
+
+        if (!tokenExists) {
+            return res.status(401).json({
+                status: 401,
+                message: "Unauthorised"
+            });
+        }
+
+        await deleteTokenService(decoded.id);
+
+        const newRefreshToken = signRefreshToken(decoded.id);
+        const newAccessToken = signAccessToken(decoded.id);
+
+        await storeTokenInDbService(
+            decoded.id,
+            newRefreshToken,
+            new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        );
+
+        res.cookie("refreshToken", newRefreshToken, refreshCookieOptions)
+        .cookie("accessToken", newAccessToken, accessCookieOptions)
+        .status(200).json({
+            status: 200,
+            message: 'Token refreshed'
+        });
+
+
+    } catch (err) {
+        next(err);
+    }
+}
