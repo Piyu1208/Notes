@@ -7,7 +7,7 @@ export const hashToken = (token) => {
     return crypto
         .createHash('sha256')
         .update(token)
-        .digest(hex);
+        .digest('hex');
 }
 
 export const signUpService = async (email, password) => {
@@ -47,7 +47,7 @@ export const findRefreshTokenService = async (user_id, refreshToken) => {
 
     const result = await db.query(`
         SELECT * FROM refresh_tokens
-        WHERE user_id = $1,
+        WHERE user_id = $1
         AND token_hash = $2
         AND expires_at > NOW()`, [user_id, token_hash]);
 
