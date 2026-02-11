@@ -8,6 +8,7 @@ import {
     storeTokenInDbService,
     deleteTokenService,
     findRefreshTokenService,
+    deleteTokenHashService
 } from '../services/authService.js';
 
 import { signRefreshToken, signAccessToken } from '../utils/jwt.js';
@@ -178,3 +179,31 @@ export const refreshAccessToken = async (req, res, next) => {
         next(err);
     }
 }
+
+
+export const logout = async (req, res, next) => {
+    try {
+        const refreshToken = req.cookies?.refreshToken;
+        await deleteTokenHashService(refreshToken);
+
+        res.clearCookie("accessToken", {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax'
+        });
+
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax'
+        });
+
+        res.status(200).json({
+            message: 'Logged out successfully',
+            data: req.user
+        });
+
+    } catch (err) {
+        next(err);
+    }
+};

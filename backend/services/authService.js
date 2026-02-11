@@ -52,5 +52,12 @@ export const findRefreshTokenService = async (user_id, refreshToken) => {
         AND expires_at > NOW()`, [user_id, token_hash]);
 
     return result.rows[0];
-}
+};
+
+export const deleteTokenHashService = async (refreshToken) => {
+    const token_hash = hashToken(refreshToken);
+
+    await db.query(`DELETE FROM refresh_tokens
+        WHERE token_hash = $1`, [token_hash]);
+};
 
