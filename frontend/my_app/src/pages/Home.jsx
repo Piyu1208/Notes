@@ -1,3 +1,4 @@
+import { Button, Heading } from "@chakra-ui/react";
 
 function Home() {
 
