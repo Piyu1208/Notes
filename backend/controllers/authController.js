@@ -13,21 +13,10 @@ import {
 
 import { signRefreshToken, signAccessToken } from '../utils/jwt.js';
 
-
-
-const refreshCookieOptions = {
-    httpOnly: true,
-    secure: false,
-    sameSite: 'lax',
-    maxAge: 30 * 24 * 60 * 60 * 1000
-};
-
-const accessCookieOptions = {
-    httpOnly: true,
-    secure: false,
-    sameSite: 'lax',
-    maxAge: 15 * 60 * 60 * 1000
-};
+import {
+  accessCookieOptions,
+  refreshCookieOptions,
+} from "../utils/cookieOptions.js";
 
 
 

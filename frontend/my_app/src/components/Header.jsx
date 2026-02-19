@@ -1,84 +1,43 @@
-import {
-  Flex,
-  Box,
-  Button,
-  Heading,
-  IconButton,
-  Stack,
-  useDisclosure,
-} from "@chakra-ui/react";
-import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+
 
 function Header() {
-  const { isOpen, onToggle } = useDisclosure();
 
   return (
-    <Box borderBottom="1px" borderColor="gray.200">
-      {/* Top Navbar */}
-      <Flex
-        as="nav"
-        align="center"
-        justify="space-between"
-        px={6}
-        py={4}
-      >
-        {/* App Title */}
-        <Heading size="md">
-          <Link to="/">Notes App</Link>
-        </Heading>
+    <header style={styles.header}>
+      <h2 style={styles.logo}>Notes App</h2>
 
-        {/* Desktop Menu */}
-        <Flex display={{ base: "none", md: "flex" }} gap={2}>
-          <Button as={Link} to="/" variant="ghost">
-            Home
-          </Button>
-          <Button as={Link} to="/login" variant="ghost">
-            Login
-          </Button>
-          <Button as={Link} to="/signup" variant="ghost">
-            Signup
-          </Button>
-          <Button as={Link} to="/new" colorScheme="teal">
-            New Note
-          </Button>
-        </Flex>
-
-        {/* Mobile Hamburger */}
-        <IconButton
-          display={{ base: "flex", md: "none" }}
-          icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-          variant="ghost"
-          aria-label="Toggle Menu"
-          onClick={onToggle}
-        />
-      </Flex>
-
-      {/* Mobile Menu */}
-      {isOpen && (
-        <Box
-          display={{ md: "none" }}
-          px={6}
-          pb={4}
-        >
-          <Stack spacing={2}>
-            <Button as={Link} to="/" variant="ghost" onClick={onToggle}>
-              Home
-            </Button>
-            <Button as={Link} to="/login" variant="ghost" onClick={onToggle}>
-              Login
-            </Button>
-            <Button as={Link} to="/signup" variant="ghost" onClick={onToggle}>
-              Signup
-            </Button>
-            <Button as={Link} to="/new" colorScheme="teal" onClick={onToggle}>
-              New Note
-            </Button>
-          </Stack>
-        </Box>
-      )}
-    </Box>
+      <nav style={styles.nav}>
+        <NavLink to="/" style={styles.link}>Home</NavLink>
+        <NavLink to="/login" style={styles.link}>Login</NavLink>
+        <NavLink to="/signup"style={styles.link}>Signup</NavLink>
+        <NavLink to="/logout"style={styles.link}>Logout</NavLink>
+      </nav>
+    </header>
   );
 }
+
+
+const styles = {
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "16px 24px",
+    borderBottom: "1px solid #ddd",
+  },
+  logo: {
+    margin: 0,
+  },
+  nav: {
+    display: "flex",
+    gap: "16px",
+  },
+  link: {
+    textDecoration: "none",
+    color: "#333",
+    fontWeight: "500",
+  },
+};
 
 export default Header;
