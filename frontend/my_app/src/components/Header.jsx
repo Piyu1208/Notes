@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 
 function Header() {
@@ -8,10 +8,11 @@ function Header() {
       <h2 style={styles.logo}>Notes App</h2>
 
       <nav style={styles.nav}>
-        <NavLink to="/" style={styles.link}>Home</NavLink>
-        <NavLink to="/login" style={styles.link}>Login</NavLink>
-        <NavLink to="/signup"style={styles.link}>Signup</NavLink>
-        <NavLink to="/logout"style={styles.link}>Logout</NavLink>
+        <Link to="/" style={styles.link}>Home</Link>
+        <Link to="/newnote" style={styles.link}>New Note</Link>
+        <Link to="/login" style={styles.link}>Login</Link>
+        <Link to="/signup"style={styles.link}>Signup</Link>
+        <Link to="/logout"style={styles.link}>Logout</Link>
       </nav>
     </header>
   );
