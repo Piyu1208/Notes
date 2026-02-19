@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../utils/axios";
-
+import { useAuth } from "../context/AuthContext";
 
 function Signup() {
   const [formData, setFormData] = useState({
@@ -10,6 +10,7 @@ function Signup() {
     confirmPassword: "",
   });
 
+  const { setUser } = useAuth();
   const navigate = useNavigate();
 
   const [error, setError] = useState("");
@@ -27,7 +28,8 @@ function Signup() {
 
     try {
       setLoading(true);
-      await api.post("api/signup", formData);
+      const res = await api.post("api/signup", formData);
+      setUser(res.data);
       navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Signup Failed");
