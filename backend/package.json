@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "migrate": "npx dbmate up",
-    "rollback": "npx dbamte down",
+    "rollback": "npx dbmate down",
     "new": "npx dbmate new",
-    "create-db": "npx dbamte create"
+    "create-db": "npx dbmate create"
   },
   "type": "module",
   "keywords": [],
