@@ -5,7 +5,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import NewNote from "./pages/NewNote";
-import EditNote from "./pages/EditNote";
+import NoteEditor from "./pages/NoteEditor";
 
 
 
@@ -19,7 +19,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/new" element={<NewNote />} />
-          <Route path="/edit/:id" element={<EditNote />} />
+          <Route path="/notes/:id" element={<NoteEditor />} />
         </Route>
       </Routes>
     </BrowserRouter>

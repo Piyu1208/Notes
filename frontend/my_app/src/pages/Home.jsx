@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from '../utils/axios.js';
+import { useNavigate } from "react-router-dom";
 
 function Home() {
     const [notes, setNotes] = useState([]);
@@ -8,12 +9,13 @@ function Home() {
         return new Date(dateString).toLocaleString();
     };
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         const fetchTasks = async () => {
             try {
                 const res = await api.get("/api/notes", {withCredentials: true});
                 setNotes(res.data.data);
-                console.log(res.data);
             } catch (err) {
                 console.error("Failed to load notes");
             }
@@ -31,7 +33,11 @@ function Home() {
             ) : (
                 <div style={styles.grid}>
                     {notes.map((note) => (
-                        <div key={note.id} style={styles.card}>
+                        <div 
+                            key={note.id}
+                            style={styles.card}
+                            onClick={() => navigate(`/notes/${note.id}`)}
+                            >
                             <h4>{note.title}</h4>
                             <small>{formatDate(note.updated_at)}</small>
                         </div>

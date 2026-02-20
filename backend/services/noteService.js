@@ -39,7 +39,7 @@ export const updateNoteService = async (id, title, content) => {
 };
 
 export const getUserNotesService = async (user_id) => {
-    const result = await db.query(`SELECT * FROM notes WHERE user_id = $1`, [user_id]);
+    const result = await db.query(`SELECT * FROM notes WHERE user_id = $1 AND is_archived = false`, [user_id]);
     return result.rows;
 };
 
