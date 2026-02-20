@@ -18,7 +18,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/new" element={<NewNote />} />
+          <Route path="/newnote" element={<NewNote />} />
           <Route path="/notes/:id" element={<NoteEditor />} />
         </Route>
       </Routes>
