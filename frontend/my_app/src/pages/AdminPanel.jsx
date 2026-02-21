@@ -106,11 +106,7 @@ const styles = {
     cursor: "pointer",
   },
   btn: {
-    padding: "6px 10px",
     marginRight: "8px",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
   },
   danger: {
     background: "#ff4d4f",
