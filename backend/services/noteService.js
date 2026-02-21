@@ -11,8 +11,9 @@ export const createNoteService = async (user_id, title, content) => {
   return result.rows[0];
 };
 
-export const getAllNotesService = async () => {
-  const result = await db.query(`SELECT * FROM notes`);
+export const getAllNotesService = async (user_id) => {
+  const result = await db.query(`SELECT id, title, is_archived, updated_at
+     FROM notes WHERE user_id = $1`, [user_id]);
   return result.rows;
 };
 

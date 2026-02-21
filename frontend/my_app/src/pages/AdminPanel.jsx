@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../utils/axios";
 
 function AdminPanel() {
     const [users, setUsers] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -22,7 +24,7 @@ function AdminPanel() {
         if (!window.confirm("Delete user?")) return;
 
         try {
-            await api.delete(`/api/users/${id}`);
+            await api.delete(`/api/admin/users/${id}`);
             setUsers((prev) => prev.filter((u) => u.id !== id));
         } catch (error) {
             console.error('Failed to delete user');
@@ -53,7 +55,10 @@ function AdminPanel() {
                   {new Date(user.created_at).toLocaleString()}
                 </td>
                 <td style={styles.td}>
-                    <button style={styles.btn}>
+                    <button
+                       style={styles.btn}
+                       onClick={() => navigate(`/admin/users/${user.id}`)}
+                    >
                         View
                     </button>
                     <button

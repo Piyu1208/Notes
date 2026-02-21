@@ -7,6 +7,7 @@ import Signup from "./pages/Signup";
 import NewNote from "./pages/NewNote";
 import NoteEditor from "./pages/NoteEditor";
 import AdminPanel from "./pages/AdminPanel";
+import UserInfo from "./pages/UserInfo";
 
 
 
@@ -22,6 +23,7 @@ function App() {
           <Route path="/newnote" element={<NewNote />} />
           <Route path="/notes/:id" element={<NoteEditor />} />
           <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/admin/users/:id" element={<UserInfo />} />
         </Route>
       </Routes>
     </BrowserRouter>

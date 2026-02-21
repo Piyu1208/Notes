@@ -30,7 +30,7 @@ export const createNote = async (req, res, next) => {
 
 export const getAllNotes = async (req, res, next) => {
     try {
-        const notes = await getAllNotesService();
+        const notes = await getAllNotesService(req.params.id);
         handleResponse(res, 200, 'Success', notes);
     } catch (err) {
         next(err);

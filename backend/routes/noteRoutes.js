@@ -25,7 +25,7 @@ router.post('/notes/archive/:id', archiveNote);
 
 
 router.use(restrictTo('admin'));
-//router.get('/notes', getAllNotes);
-router.delete('/notes/:id', deleteNote);
+router.get('/admin/notes/:id', getAllNotes);
+router.delete('/admin/notes/:id', deleteNote);
 
 export default router;
