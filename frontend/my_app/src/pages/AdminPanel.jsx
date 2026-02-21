@@ -4,20 +4,26 @@ import api from "../utils/axios";
 
 function AdminPanel() {
     const [users, setUsers] = useState([]);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const limit = 5;
     const navigate = useNavigate();
+    
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const res = await api.get('/api/users');
+                const res = await api.get(`/api/users?page=${page}&limit=${limit}`);
                 setUsers(res.data.data);
+                const total = res.data.total;
+                setTotalPages(Math.ceil(total / limit));
             } catch (err) {
                 console.error("Failed to load users");
             }
         }
 
         fetchUsers();
-    }, []);
+    }, [page]);
 
     const handleDelete = async (id) => {
         if (!window.confirm("Delete user?")) return;
@@ -71,6 +77,23 @@ function AdminPanel() {
             ))}
           </tbody>
         </table>
+        <div style={styles.pagination}>
+          <button
+            disabled={page === 1}
+            onClick={() => setPage((p) => p - 1)}
+          >
+            Prev
+          </button>
+
+          <span style={styles.pageInfo}>Page {page}</span>
+
+          <button 
+            disabled={page >= totalPages}
+            onClick={() => setPage((p) => p + 1)}
+          >
+            Next
+          </button>
+        </div>
       </div>
     );
 }
@@ -111,6 +134,16 @@ const styles = {
   danger: {
     background: "#ff4d4f",
     color: "#fff",
+  },
+  pagination: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "12px",
+    marginTop: "20px",
+  },
+  pageInfo: {
+    fontWeight: "500",
   },
 };
 

@@ -1,7 +1,9 @@
 import { getUsersService, 
     getUserByIdService,
 deleteUserService,
-updateRoleService } from '../services/userService.js';
+updateRoleService,
+getUserCountService,
+ } from '../services/userService.js';
 
 const handleResponse = (res, status, message, data = null) => {
     res.status(status).json({
@@ -29,11 +31,16 @@ export const getUsers = async (req, res, next) => {
         throw new Error('Invalid sort order');
     }
 
-
     try{
         page = page - 1;
         const users = await getUsersService(page, limit, sortBy, order);
-        handleResponse(res, 200, 'success', users);
+        const total = await getUserCountService();
+        return res.status(200).json({
+            status: 200,
+            message: 'success',
+            data: users,
+            total,
+        });
     }catch(err){
         next(err);
     }

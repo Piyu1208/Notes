@@ -18,3 +18,8 @@ export const updateRoleService = async (role, id) => {
     const result = await db.query('UPDATE users SET role = $1 WHERE id = $2 RETURNING *', [role, id]);
     return result.rows[0];
 }
+
+export const getUserCountService = async () => {
+    const result = await db.query('SELECT COUNT(*) FROM users');
+    return Number(result.rows[0].count);
+}
