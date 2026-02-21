@@ -14,7 +14,7 @@ function Home() {
     useEffect(() => {
         const fetchTasks = async () => {
             try {
-                const res = await api.get("/api/notes", {withCredentials: true});
+                const res = await api.get("/api/notes");
                 setNotes(res.data.data);
             } catch (err) {
                 console.error("Failed to load notes");

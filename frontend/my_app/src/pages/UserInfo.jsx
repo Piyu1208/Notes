@@ -4,7 +4,7 @@ import api from "../utils/axios";
 
 function UserInfo() {
     const [notes, setNotes] = useState([]);
-    const [user, setUser] = useState();
+    const [user, setUser] = useState(null);
     const { id } = useParams();
     const navigate = useNavigate();
 

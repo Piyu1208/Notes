@@ -9,9 +9,7 @@ function NoteEditor() {
 
     const handleSave = async () => {
         try {
-            const res = await api.patch(`api/notes/${id}`, note, {
-                withCredentials: true,
-            });
+            const res = await api.patch(`api/notes/${id}`, note);
             setNote(res.data.data);
         } catch (err) {
             console.error("Failed to save");
@@ -22,10 +20,7 @@ function NoteEditor() {
         if (!window.confirm("Delete this note?")) return;
 
         try {
-            const res = await api.post(`/api/notes/archive/${id}`, {
-                withCredentials: true,
-            });
-            console.log(res.data);
+            const res = await api.post(`/api/notes/archive/${id}`);
             navigate("/");
         } catch (err) {
             console.error("Failed to delete note");
@@ -35,7 +30,7 @@ function NoteEditor() {
     useEffect(() => {
         const fetchNote = async () => {
             try {
-                const res = await api.get(`/api/notes/${id}`, {withCredentials: true});
+                const res = await api.get(`/api/notes/${id}`);
                 setNote(res.data.data);
             } catch (err) {
                 console.error("Failed to load note");

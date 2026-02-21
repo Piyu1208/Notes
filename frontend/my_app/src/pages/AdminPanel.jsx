@@ -9,8 +9,7 @@ function AdminPanel() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const res = await api.get('/api/users', { withCredentials: true });
-                console.log(res.data);
+                const res = await api.get('/api/users');
                 setUsers(res.data.data);
             } catch (err) {
                 console.error("Failed to load users");
@@ -24,7 +23,7 @@ function AdminPanel() {
         if (!window.confirm("Delete user?")) return;
 
         try {
-            await api.delete(`/api/admin/users/${id}`);
+            await api.delete(`/api/users/${id}`);
             setUsers((prev) => prev.filter((u) => u.id !== id));
         } catch (error) {
             console.error('Failed to delete user');

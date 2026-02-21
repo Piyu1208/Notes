@@ -12,9 +12,7 @@ function NewNote() {
         try {
             const res = await api.post(
                 "/api/notes", 
-                { title, content}, 
-                { withCredentials: true }
-            
+                { title, content},             
             );
             
             const id = res.data.data.id;
