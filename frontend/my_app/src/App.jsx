@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import NewNote from "./pages/NewNote";
 import NoteEditor from "./pages/NoteEditor";
+import AdminPanel from "./pages/AdminPanel";
 
 
 
@@ -20,6 +21,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/newnote" element={<NewNote />} />
           <Route path="/notes/:id" element={<NoteEditor />} />
+          <Route path="/admin" element={<AdminPanel />} />
         </Route>
       </Routes>
     </BrowserRouter>
