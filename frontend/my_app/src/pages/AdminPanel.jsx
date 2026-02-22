@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../utils/axios";
+import { useAuth } from "../context/AuthContext";
 
 function AdminPanel() {
+    const { user: currentUser } = useAuth();
+
     const [users, setUsers] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -67,7 +70,12 @@ function AdminPanel() {
                         View
                     </button>
                     <button
-                        style={{ ...styles.btn, ...styles.danger }}
+                        style={{
+                           ...styles.btn, 
+                           ...styles.danger,
+                           ...(currentUser?.id === user.id && styles.disabled),
+                          }}
+                        disabled={currentUser?.id === user.id}
                         onClick={() => handleDelete(user.id)}
                     >
                         Delete
@@ -134,6 +142,11 @@ const styles = {
   danger: {
     background: "#ff4d4f",
     color: "#fff",
+  },
+  disabled: {
+    opacity: 0.2,
+    cursor: "not-allowed",
+    pointerEvents: "none",
   },
   pagination: {
     display: "flex",

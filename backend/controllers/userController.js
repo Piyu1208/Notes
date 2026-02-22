@@ -58,6 +58,10 @@ export const getUserById = async (req, res, next) => {
 }
 
 export const deleteUser = async (req, res, next) => {
+    if (req.user.id === req.params.id) {
+        return handleResponse(res, 400, "Cannot delete your own account");
+    }
+    
     try {
         await deleteUserService(req.params.id);
         res.sendStatus(204);
