@@ -5,14 +5,24 @@ import api from "../utils/axios";
 function NoteEditor() {
     const { id } = useParams();
     const [note, setNote] = useState(null);
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleSave = async () => {
+        if (!note.title.trim()) {
+            setError("Title cannot be empty");
+            return;
+        }
+
         try {
+            setLoading(true);
             const res = await api.patch(`api/notes/${id}`, note);
             setNote(res.data.data);
-        } catch (err) {
-            console.error("Failed to save");
+        } catch {
+            setError("Failed to save");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -22,9 +32,9 @@ function NoteEditor() {
         try {
             const res = await api.post(`/api/notes/archive/${id}`);
             navigate("/");
-        } catch (err) {
-            console.error("Failed to delete note");
-        }
+        } catch {
+            setError("Failed to delete note");
+        } 
     };
 
     useEffect(() => {
@@ -32,8 +42,8 @@ function NoteEditor() {
             try {
                 const res = await api.get(`/api/notes/${id}`);
                 setNote(res.data.data);
-            } catch (err) {
-                console.error("Failed to load note");
+            } catch {
+                setError("Failed to load note");
             }
         }
 
@@ -43,6 +53,7 @@ function NoteEditor() {
     if (!note) return <p>Loadiing...</p>;
 
     return (
+        <>
         <div style={styles.container}>
             <div style={styles.editor}>
                 <input 
@@ -61,12 +72,13 @@ function NoteEditor() {
                     }
                 />
 
-                <button onClick={handleSave}>Save</button>
+                {loading && <button>Saving...</button>}
+                {!loading && <button onClick={handleSave}>Save</button>}
                 <button onClick={handleDelete}>Delete</button>
             </div>
-
-
         </div>
+        {error && <p style={styles.error}>{error}</p>}
+        </>
     );
 }
 
@@ -101,6 +113,11 @@ const styles = {
     borderRadius: "4px",
     resize: "none",
   },
+  error: {
+    color: "red",
+    display: "flex",
+    justifyContent: "center",
+  }
 };
 
 export default NoteEditor;

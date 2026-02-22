@@ -5,11 +5,19 @@ import api from "../utils/axios";
 function NewNote() {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
     
     const navigate = useNavigate();
 
     const handleSave = async () => {
+        if (!title.trim()) {
+            setError("Title cannot be empty");
+            return;
+        }
+
         try {
+            setLoading(true);
             const res = await api.post(
                 "/api/notes", 
                 { title, content},             
@@ -17,12 +25,15 @@ function NewNote() {
             
             const id = res.data.data.id;
             navigate(`/notes/${id}`);
-        } catch (err) {
-            console.error("Failed to save note");
+        } catch {
+            setError("Failed to save note");
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
+        <>
         <div style={styles.container}>
             <div style={styles.editor}>
                 <input 
@@ -38,9 +49,12 @@ function NewNote() {
                     onChange={(e) => setContent(e.target.value)}
                 />
 
-                <button onClick={handleSave}>Save</button>
+                {loading && <button>Saving...</button>}
+                {!loading && <button onClick={handleSave}>Save</button>}
             </div>
         </div>
+        {error && <p style={styles.error}>{error}</p>}
+        </>
     );
 }
 
@@ -76,6 +90,11 @@ const styles = {
     borderRadius: "4px",
     resize: "none",
   },
+  error: {
+    color: "red",
+    display: "flex",
+    justifyContent: "center",
+  }
 };
 
 export default NewNote;
