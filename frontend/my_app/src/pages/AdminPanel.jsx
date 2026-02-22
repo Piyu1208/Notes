@@ -6,6 +6,10 @@ import { useAuth } from "../context/AuthContext";
 function AdminPanel() {
     const { user: currentUser } = useAuth();
 
+    if (!currentUser || currentUser.role !== 'admin') {
+      return <h2>Not Authorised</h2>
+    }
+
     const [users, setUsers] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -15,6 +19,7 @@ function AdminPanel() {
 
     useEffect(() => {
         const fetchUsers = async () => {
+
             try {
                 const res = await api.get(`/api/users?page=${page}&limit=${limit}`);
                 setUsers(res.data.data);

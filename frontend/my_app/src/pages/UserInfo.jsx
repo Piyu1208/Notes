@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../utils/axios";
+import { useAuth } from "../context/AuthContext";
 
 function UserInfo() {
+    const { user: currentUser } = useAuth();
+
+    if (!currentUser || currentUser.role !== "admin") {
+        return <h2>Not Authorised</h2>;
+    }
+    
     const [notes, setNotes] = useState([]);
     const [user, setUser] = useState(null);
     const { id } = useParams();
