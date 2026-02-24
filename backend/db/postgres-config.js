@@ -1,11 +1,10 @@
 import { Pool } from 'pg';
 
 const pool = new Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB,
-    password: process.env.PASSWORD,
-    port: process.env.PORT
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    },
 });
 
 
