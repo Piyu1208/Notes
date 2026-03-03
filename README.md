@@ -191,4 +191,8 @@ This project was built to demonstrate:
 
 ---
 
+## App URL
+https://notes-red-beta-36.vercel.app/
+
+---
 
