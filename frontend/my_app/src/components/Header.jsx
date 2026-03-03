@@ -23,6 +23,7 @@ function Header() {
           <>
             <Link to="/newnote" style={styles.link}>New Note</Link>
             <Link to="/logout"style={styles.link} onClick={handleLogout}>Logout</Link>
+            {user.role === 'admin' && <Link to="/admin" style={styles.link}>Admin</Link>}
           </>
         ) : (
           <>
